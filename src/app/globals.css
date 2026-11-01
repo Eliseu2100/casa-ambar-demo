@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Direção A "Concreto e jacarandá" (docs/DIRECAO.md, DESIGN.md) */
+@theme {
+  --color-concreto: #e4e2dd;
+  --color-papel: #f1efeb;
+  --color-tinta: #1c1a17;
+  --color-tinta-2: #57534c;
+  --color-jacaranda: #4b2e21;
+  --color-jacaranda-escuro: #3a2219;
+  --color-mata: #23362b;
+  --color-mata-escuro: #1b2a21;
+  --color-ambar: #c99355;
+  --color-linha: rgb(28 26 23 / 0.14);
+  --color-linha-clara: rgb(241 239 235 / 0.18);
+
+  --font-display: var(--font-bodoni), "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: var(--font-hanken), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Consolas, monospace;
+
+  --ease-assenta: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  background: var(--color-concreto);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+.rotulo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ambar);
+  outline-offset: 3px;
+}
+
+/* Hero: a foto assenta e o texto sobe em sequência. Termina sempre visível. */
+@keyframes assentar { from { transform: scale(1.06); } to { transform: scale(1); } }
+@keyframes subir { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.hero-foto { animation: assentar 2.4s var(--ease-assenta) both; }
+.hero-item { animation: subir 0.9s var(--ease-assenta) both; }
+
+/* Revelação ao rolar: só esconde quando há JavaScript (classe .js no <html>). */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s var(--ease-assenta), transform 0.7s var(--ease-assenta);
+}
+.js [data-reveal].in { opacity: 1; transform: none; }
+
+/* A máscara fica na imagem de dentro, não no elemento observado: com clip-path no próprio
+   elemento, o IntersectionObserver o considera invisível e a foto nunca aparece. */
+.js [data-reveal="foto"] {
+  opacity: 1;
+  transform: none;
+}
+.js [data-reveal="foto"] > * {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.1s var(--ease-assenta);
+}
+.js [data-reveal="foto"].in > * { clip-path: inset(0 0 0 0); }
+
+.seta { transition: transform 0.2s var(--ease-assenta); }
+a:hover .seta, button:hover .seta { transform: translate(3px, -3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-foto, .hero-item { animation: none; }
+  .js [data-reveal], .js [data-reveal="foto"], .js [data-reveal="foto"] > * { opacity: 1; transform: none; clip-path: none; transition: none; }
+  .seta { transition: none; }
+}
