@@ -18,3 +18,7 @@ npm install
 npm run dev     # http://localhost:3100
 npm run build && npm run start
 ```
+
+## Publicação
+Ligado à Vercel (projeto `casa-ambar-demo`): cada push na `main` publica em produção automaticamente.
+Site: https://casa-ambar-demo-theta.vercel.app
